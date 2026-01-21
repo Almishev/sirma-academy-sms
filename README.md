@@ -21,8 +21,8 @@ This wil be demo project for SMS
 
 ##  Connect to supaBase 
 Put ths conection string in .env file in backend 
-DATABASE_URL=postgresql://postgres:SMSforSirma@db.xslfzztpqakuzmbqvcvx.supabase.co:5432/postgres
-or use this data
+1. DATABASE_URL=postgresql://postgres:SMSforSirma@db.xslfzztpqakuzmbqvcvx.supabase.co:5432/postgres
+2. or use this data
 host:
 db.xslfzztpqakuzmbqvcvx.supabase.co
 
