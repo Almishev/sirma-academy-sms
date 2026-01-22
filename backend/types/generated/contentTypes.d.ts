@@ -494,7 +494,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       ['Node.js', 'React', 'PostgreSQL', 'Docker']
     > &
       Schema.Attribute.Required;
-    Title: Schema.Attribute.String;
+    Title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
