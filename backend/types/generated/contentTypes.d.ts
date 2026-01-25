@@ -467,35 +467,6 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiCourseModuleCourseModule
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'course_modules';
-  info: {
-    displayName: 'CourseModule';
-    pluralName: 'course-modules';
-    singularName: 'course-module';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::course-module.course-module'
-    > &
-      Schema.Attribute.Private;
-    Order: Schema.Attribute.Integer & Schema.Attribute.Required;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
   collectionName: 'courses';
   info: {
@@ -511,18 +482,27 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     Description: Schema.Attribute.Text;
+    enrollments: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::enrollment.enrollment'
+    >;
+    Level: Schema.Attribute.Enumeration<
+      ['Beginner', 'Intermediate', 'Advanced']
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::course.course'
     > &
       Schema.Attribute.Private;
+    module: Schema.Attribute.Relation<'manyToOne', 'api::module.module'>;
+    published: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
     Technology: Schema.Attribute.Enumeration<
-      ['Node.js', 'React', 'PostgreSQL', 'Docker']
+      ['Node.js', 'React', 'React Native', 'PostgreSQL', 'Docker']
     > &
       Schema.Attribute.Required;
-    Title: Schema.Attribute.String;
+    Title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -540,9 +520,13 @@ export interface ApiEnrollmentEnrollment extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    enrollstatus: Schema.Attribute.Enumeration<
+      ['active', 'pending', 'completed']
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -550,9 +534,14 @@ export interface ApiEnrollmentEnrollment extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    role: Schema.Attribute.Enumeration<['teacher', 'student']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -567,6 +556,7 @@ export interface ApiModuleModule extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    courses: Schema.Attribute.Relation<'oneToMany', 'api::course.course'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1040,7 +1030,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1054,6 +1043,10 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    enrollments: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::enrollment.enrollment'
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1096,7 +1089,6 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::course-module.course-module': ApiCourseModuleCourseModule;
       'api::course.course': ApiCourseCourse;
       'api::enrollment.enrollment': ApiEnrollmentEnrollment;
       'api::module.module': ApiModuleModule;

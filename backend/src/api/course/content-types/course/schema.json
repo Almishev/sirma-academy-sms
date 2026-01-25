@@ -12,7 +12,8 @@
   "pluginOptions": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
       "type": "text"
@@ -23,9 +24,33 @@
       "enum": [
         "Node.js",
         "React",
+        "React Native",
         "PostgreSQL",
         "Docker"
       ]
+    },
+    "enrollments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::enrollment.enrollment",
+      "mappedBy": "course"
+    },
+    "module": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::module.module",
+      "inversedBy": "courses"
+    },
+    "Level": {
+      "type": "enumeration",
+      "enum": [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+      ]
+    },
+    "published": {
+      "type": "datetime"
     }
   }
 }
