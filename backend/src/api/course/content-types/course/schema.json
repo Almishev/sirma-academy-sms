@@ -18,18 +18,39 @@
     "Description": {
       "type": "text"
     },
-    "Teacher": {
-      "type": "string"
-    },
     "Technology": {
       "type": "enumeration",
       "required": true,
       "enum": [
         "Node.js",
         "React",
+        "React Native",
         "PostgreSQL",
         "Docker"
       ]
+    },
+    "enrollments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::enrollment.enrollment",
+      "mappedBy": "course"
+    },
+    "module": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::module.module",
+      "inversedBy": "courses"
+    },
+    "Level": {
+      "type": "enumeration",
+      "enum": [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+      ]
+    },
+    "published": {
+      "type": "datetime"
     }
   }
 }
